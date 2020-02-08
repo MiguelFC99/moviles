@@ -1,0 +1,138 @@
+import 'package:flutter/material.dart';
+import 'package:tarea1/route_generator.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Tarea 1',
+      initialRoute: "/",
+      onGenerateRoute: RouteGenerator.generateRoute,
+    );
+  }
+}
+
+class PageOne extends StatefulWidget {
+  PageOne({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _PageOneState createState() => _PageOneState();
+}
+
+class _PageOneState extends State<PageOne> {
+  String _callBP;
+  String _callBP2;
+ 
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text('Pagina 1'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Text(
+              "BIENVENIDOS",
+              style: TextStyle(
+                fontFamily: "LuckiestGuy",
+                fontSize: 40,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            Image.asset(
+              "assets/pacman.jpg",
+              height: 200,
+            ),
+            Text("Seleccione una opción:",
+              style: TextStyle(
+                fontFamily: "Sriracha",
+                fontSize: 20,
+              ),),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                MaterialButton(
+                  color: Colors.blue,
+                  child: Text("Pagina 2",style: TextStyle( color: Colors.white),),
+                  onPressed: () {
+                    _showAlertDialog(context);
+                  },
+                ),
+                MaterialButton(
+                  color: Colors.blue,
+                  child: Text("Pagina 3",style: TextStyle( color: Colors.white),),
+                  onPressed: () {
+                    _openTirdPage(context);
+                  },
+                ),
+              ],
+            ),
+            Text("Pg. 2 => $_callBP", textAlign: TextAlign.center,style: TextStyle(fontSize: 16),),
+            Text("Pg. 3 => $_callBP2", textAlign: TextAlign.center,style: TextStyle(fontSize: 16),),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAlertDialog(BuildContext ctx) {
+    showDialog(
+        context: ctx,
+        builder: (context) {
+          TextEditingController _textController = TextEditingController();
+          return AlertDialog(
+            title: Text("Ingresa algún dato"),
+            content: TextField(
+              controller: _textController,
+              maxLength: 10,
+              decoration: InputDecoration(
+                labelText: "Ingresa una palabra",
+              ),
+            ),
+            actions: <Widget>[
+              RaisedButton(
+                child: Text("Cancelar"),
+                onPressed: () {},
+              ),
+              RaisedButton(
+                child: Text("Aceptar"),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  await Navigator.of(context)
+                      .pushNamed(
+                    "/secondPage",
+                    arguments: _textController.text,
+                  )
+                      .then((response) {
+                    _callBP = response;
+                  });
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  void _openTirdPage(BuildContext context) async {
+    TextEditingController _textController2 = TextEditingController();
+    await Navigator.of(context)
+        .pushNamed(
+      "/tirdPage",
+      arguments: _textController2.text,
+    )
+        .then(
+      (response) {
+        _callBP2 = response;
+      },
+    );
+  }
+}
